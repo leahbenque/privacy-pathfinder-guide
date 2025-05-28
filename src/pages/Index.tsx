@@ -90,6 +90,13 @@ const Index = () => {
             >
               View Laws Overview
             </Button>
+            <Button 
+              size="lg" 
+              className="bg-white text-blue-600 hover:bg-blue-50 font-semibold"
+              onClick={() => navigate("/us-specific")}
+            >
+              US Specific
+            </Button>
           </div>
         </div>
       </section>
