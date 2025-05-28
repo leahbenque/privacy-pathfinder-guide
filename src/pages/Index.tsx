@@ -107,7 +107,7 @@ const Index = () => {
               <div className="text-gray-600">Maximum GDPR fine</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600 mb-2">72hrs</div>
+              <div className="text-3xl font-bold text-blue-600 mb-2">80hrs</div>
               <div className="text-gray-600">Breach notification time</div>
             </div>
             <div className="text-center">
