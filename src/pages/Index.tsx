@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,9 +5,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Shield, Globe, FileText, CheckCircle, Users, Scale, BookOpen, AlertTriangle } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [selectedLaw, setSelectedLaw] = useState("gdpr");
+  const navigate = useNavigate();
+  const [complianceSteps, setComplianceSteps] = useState([
+    { step: "Data Audit", description: "Identify what personal data you collect and process", completed: false },
+    { step: "Legal Basis", description: "Establish lawful basis for data processing", completed: false },
+    { step: "Privacy Policy", description: "Create comprehensive privacy notices", completed: false },
+    { step: "Data Subject Rights", description: "Implement processes for individual rights", completed: false },
+    { step: "Security Measures", description: "Implement appropriate technical safeguards", completed: false },
+    { step: "Training", description: "Train staff on privacy requirements", completed: false }
+  ]);
+
+  const toggleStep = (index: number) => {
+    setComplianceSteps(steps => 
+      steps.map((step, i) => 
+        i === index ? { ...step, completed: !step.completed } : step
+      )
+    );
+  };
+
+  const completedCount = complianceSteps.filter(step => step.completed).length;
+  const progressPercentage = (completedCount / complianceSteps.length) * 100;
 
   const privacyLaws = {
     gdpr: {
@@ -40,15 +60,6 @@ const Index = () => {
     }
   };
 
-  const complianceSteps = [
-    { step: "Data Audit", description: "Identify what personal data you collect and process", completed: false },
-    { step: "Legal Basis", description: "Establish lawful basis for data processing", completed: false },
-    { step: "Privacy Policy", description: "Create comprehensive privacy notices", completed: false },
-    { step: "Data Subject Rights", description: "Implement processes for individual rights", completed: false },
-    { step: "Security Measures", description: "Implement appropriate technical safeguards", completed: false },
-    { step: "Training", description: "Train staff on privacy requirements", completed: false }
-  ];
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
       {/* Hero Section */}
@@ -59,18 +70,24 @@ const Index = () => {
             <Shield className="h-16 w-16 text-blue-100" />
           </div>
           <h1 className="text-5xl font-bold mb-6 leading-tight">
-            Navigate Data Privacy Laws
-            <br />
-            <span className="text-blue-200">with Confidence</span>
+            Navigating Data Privacy Laws with Confidence
           </h1>
           <p className="text-xl mb-8 text-blue-100 max-w-3xl mx-auto">
             Stay compliant with global data protection regulations. Get expert guidance, tools, and resources to protect your business and your customers' privacy.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold">
+            <Button 
+              size="lg" 
+              className="bg-white text-blue-600 hover:bg-blue-50 font-semibold"
+              onClick={() => navigate("/get-started")}
+            >
               Get Started
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button 
+              size="lg" 
+              className="bg-white text-blue-600 hover:bg-blue-50 font-semibold"
+              onClick={() => navigate("/laws-overview")}
+            >
               View Laws Overview
             </Button>
           </div>
@@ -184,21 +201,31 @@ const Index = () => {
             <div className="mb-6">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-gray-700">Compliance Progress</span>
-                <span className="text-sm text-gray-500">0/6 completed</span>
+                <span className="text-sm text-gray-500">{completedCount}/{complianceSteps.length} completed</span>
               </div>
-              <Progress value={0} className="h-2" />
+              <Progress value={progressPercentage} className="h-2" />
             </div>
 
             <div className="space-y-4">
               {complianceSteps.map((item, index) => (
-                <div key={index} className="flex items-start gap-4 p-4 rounded-lg border hover:bg-gray-50 transition-colors">
+                <div 
+                  key={index} 
+                  className="flex items-start gap-4 p-4 rounded-lg border hover:bg-gray-50 transition-colors cursor-pointer"
+                  onClick={() => toggleStep(index)}
+                >
                   <div className="flex-shrink-0 mt-1">
-                    <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                      item.completed 
+                        ? 'border-green-500 bg-green-50' 
+                        : 'border-gray-300 hover:border-blue-500'
+                    }`}>
                       {item.completed && <CheckCircle className="h-4 w-4 text-green-500" />}
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-gray-900">{item.step}</h4>
+                    <h4 className={`font-semibold ${item.completed ? 'text-green-600' : 'text-gray-900'}`}>
+                      {item.step}
+                    </h4>
                     <p className="text-gray-600 text-sm">{item.description}</p>
                   </div>
                 </div>
@@ -228,7 +255,7 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full">Download Templates</Button>
+                <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold">Download Templates</Button>
               </CardContent>
             </Card>
 
@@ -241,7 +268,7 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" variant="outline">Access Training</Button>
+                <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold">Access Training</Button>
               </CardContent>
             </Card>
 
@@ -254,7 +281,7 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" variant="outline">Get Response Kit</Button>
+                <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold">Get Response Kit</Button>
               </CardContent>
             </Card>
           </div>
@@ -269,10 +296,10 @@ const Index = () => {
             Get personalized guidance from our privacy law experts to protect your business.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold">
               Schedule Consultation
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10">
+            <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 font-semibold">
               Contact Us
             </Button>
           </div>
